@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { FarmersModule } from './farmers/farmers.module';
 import { User } from './users/entities';
 import { JwtAuthGuard, RolesGuard } from './common/guards';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
@@ -16,7 +17,17 @@ import { JwtAuthGuard, RolesGuard } from './common/guards';
       envFilePath: '.env',
     }),
     TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
+      imports: [
+        ConfigModule,
+        ThrottlerModule.forRoot({
+          throttlers: [
+            {
+              ttl: 60000,
+              limit: 10,
+            },
+          ],
+        }),
+      ],
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
         host: configService.get<string>('DB_HOST'),
