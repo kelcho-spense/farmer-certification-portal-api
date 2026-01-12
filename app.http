@@ -1,0 +1,126 @@
+@baseUrl = http://localhost:8000/api
+@contentType = application/json
+
+### ========== FARMER VARIABLES (update after farmer login) ==========
+# @farmerAccessToken = YOUR_FARMER_ACCESS_TOKEN
+# @farmerRefreshToken = YOUR_FARMER_REFRESH_TOKEN
+# @farmerId = YOUR_FARMER_ID
+
+@farmerAccessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzODJiNTIyZi01MTEzLTQ5MTYtOTY0NC01NmM2YTIzNzI4MTUiLCJlbWFpbCI6ImZhcm1lckBleGFtcGxlLmNvbSIsInJvbGUiOiJmYXJtZXIiLCJpYXQiOjE3NjgxNjg0MTMsImV4cCI6MTc2ODE2OTMxM30.TYqvGeQdCy5PpT0pf9glxuJumwB6LIAwVUPRswK0MIs
+@farmerRefreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzODJiNTIyZi01MTEzLTQ5MTYtOTY0NC01NmM2YTIzNzI4MTUiLCJlbWFpbCI6ImZhcm1lckBleGFtcGxlLmNvbSIsInJvbGUiOiJmYXJtZXIiLCJpYXQiOjE3NjgxNjg0MTMsImV4cCI6MTc2ODc3MzIxM30.rlhYbCYnIzn0fK3OEkBIYO435WFTjteRhwDC73JQh10
+@farmerId = 382b522f-5113-4916-9644-56c6a2372815
+
+### ========== ADMIN VARIABLES (update after admin login) ==========
+# @adminAccessToken = YOUR_ADMIN_ACCESS_TOKEN
+# @adminRefreshToken = YOUR_ADMIN_REFRESH_TOKEN
+@adminRefreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxZDQzNDFjYy0yNWY2LTQ1MTgtYWNhOC02ODBlODZhMzY2ZTIiLCJlbWFpbCI6ImFkbWluQGZhcm1jZXJ0LmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc2ODE2ODE0NSwiZXhwIjoxNzY4NzcyOTQ1fQ.Zcg2xS628foBqlVgTyPraPOUh4RboJ1xdrjtim4vfiA
+@adminAccessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxZDQzNDFjYy0yNWY2LTQ1MTgtYWNhOC02ODBlODZhMzY2ZTIiLCJlbWFpbCI6ImFkbWluQGZhcm1jZXJ0LmNvbSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc2ODE2ODE0NSwiZXhwIjoxNzY4MTY5MDQ1fQ.3rZeW1ihJ72IdZ2Bc3mcQ2eG2iSQIhfI9s39nAl3Swg
+
+### ========== Health Check ==========
+
+### Health Check
+GET {{baseUrl}}/health
+
+### ========== AUTH ENDPOINTS ==========
+
+### Register Farmer
+POST {{baseUrl}}/auth/register
+Content-Type: {{contentType}}
+
+{
+  "email": "farmer@example.com",
+  "password": "password123",
+  "name": "John Doe",
+  "farmSize": 50.5,
+  "cropType": "Maize"
+}
+
+### Login Admin
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "admin@farmcert.com",
+  "password": "Admin@123"
+}
+
+### Register Admin (Admin Only - requires existing admin token)
+POST {{baseUrl}}/auth/admin/register
+Content-Type: {{contentType}}
+Authorization: Bearer {{adminAccessToken}}
+
+{
+  "email": "admin2@example.com",
+  "password": "admin123",
+  "name": "Admin User 2"
+}
+
+### Login Farmer
+POST {{baseUrl}}/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "farmer@example.com",
+  "password": "password123"
+}
+
+
+
+### Refresh Farmer Tokens
+POST {{baseUrl}}/auth/refresh
+Authorization: Bearer {{farmerRefreshToken}}
+
+### Refresh Admin Tokens
+POST {{baseUrl}}/auth/refresh
+Authorization: Bearer {{adminRefreshToken}}
+
+### Logout Farmer
+POST {{baseUrl}}/auth/logout
+Authorization: Bearer {{farmerAccessToken}}
+
+### Logout Admin
+POST {{baseUrl}}/auth/logout
+Authorization: Bearer {{adminAccessToken}}
+
+### ========== FARMER ENDPOINTS ==========
+
+### Get My Profile (Farmer)
+GET {{baseUrl}}/farmers/me
+Authorization: Bearer {{farmerAccessToken}}
+
+### Get My Status (Farmer)
+GET {{baseUrl}}/farmers/{{farmerId}}/status
+Authorization: Bearer {{farmerAccessToken}}
+
+### ========== ADMIN ENDPOINTS ==========
+
+### Get All Farmers (Admin Only)
+GET {{baseUrl}}/farmers
+Authorization: Bearer {{adminAccessToken}}
+
+### Certify Farmer (Admin Only)
+PATCH {{baseUrl}}/farmers/{{farmerId}}/status
+Content-Type: {{contentType}}
+Authorization: Bearer {{adminAccessToken}}
+
+{
+  "status": "certified"
+}
+
+### Decline Farmer (Admin Only)
+PATCH {{baseUrl}}/farmers/{{farmerId}}/status
+Content-Type: {{contentType}}
+Authorization: Bearer {{adminAccessToken}}
+
+{
+  "status": "declined"
+}
+
+### Set Farmer to Pending (Admin Only)
+PATCH {{baseUrl}}/farmers/{{farmerId}}/status
+Content-Type: {{contentType}}
+Authorization: Bearer {{adminAccessToken}}
+
+{
+  "status": "pending"
+}
