@@ -5,7 +5,7 @@ import {
   Param,
   Body,
   UseGuards,
-  ParseUUIDPipe,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { FarmersService } from './farmers.service';
 import { UpdateFarmerStatusDto } from './dto';
@@ -35,7 +35,7 @@ export class FarmersController {
   // GET /farmers/:id/status - Farmer checks their status
   @Get(':id/status')
   async getFarmerStatus(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Param('id', ParseIntPipe) id: number,
     @CurrentUser() user: User,
   ) {
     // Farmers can only check their own status, admins can check any
@@ -49,7 +49,7 @@ export class FarmersController {
   @Patch(':id/status')
   @Roles(UserRole.ADMIN)
   async updateFarmerStatus(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updateFarmerStatusDto: UpdateFarmerStatusDto,
   ) {
     return this.farmersService.updateFarmerStatus(id, updateFarmerStatusDto);

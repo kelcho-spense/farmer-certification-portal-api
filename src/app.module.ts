@@ -27,7 +27,10 @@ import { JwtAuthGuard, RolesGuard } from './common/guards';
         entities: [User],
         synchronize: true, // Set to false in production
         logging: configService.get<string>('NODE_ENV') === 'development',
-        ssl: configService.get<string>('DB_SSL') === 'true' ? { rejectUnauthorized: false } : false,
+        ssl:
+          configService.get<string>('DB_SSL') === 'true'
+            ? { rejectUnauthorized: false }
+            : false,
       }),
       inject: [ConfigService],
     }),
@@ -47,4 +50,4 @@ import { JwtAuthGuard, RolesGuard } from './common/guards';
     },
   ],
 })
-export class AppModule { }
+export class AppModule {}

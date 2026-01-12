@@ -117,12 +117,12 @@ export class AuthService {
     return { tokens, user: this.excludeSensitiveFields(user) };
   }
 
-  async logout(userId: string): Promise<{ message: string }> {
+  async logout(userId: number): Promise<{ message: string }> {
     await this.userRepository.update(userId, { hashedRefreshToken: null });
     return { message: 'Logged out successfully' };
   }
 
-  async refreshTokens(userId: string, refreshToken: string): Promise<Tokens> {
+  async refreshTokens(userId: number, refreshToken: string): Promise<Tokens> {
     const user = await this.userRepository.findOne({ where: { id: userId } });
 
     if (!user || !user.hashedRefreshToken) {
@@ -145,7 +145,7 @@ export class AuthService {
     return tokens;
   }
 
-  async validateUser(id: string): Promise<User | null> {
+  async validateUser(id: number): Promise<User | null> {
     return this.userRepository.findOne({ where: { id } });
   }
 
@@ -173,7 +173,7 @@ export class AuthService {
   }
 
   private async generateTokens(
-    userId: string,
+    userId: number,
     email: string,
     role: UserRole,
   ): Promise<Tokens> {
@@ -211,7 +211,7 @@ export class AuthService {
   }
 
   private async updateRefreshToken(
-    userId: string,
+    userId: number,
     refreshToken: string,
   ): Promise<void> {
     const hashedRefreshToken = await this.hashData(refreshToken);

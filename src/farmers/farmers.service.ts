@@ -29,7 +29,7 @@ export class FarmersService {
     return farmers.map((farmer) => this.excludeSensitiveFields(farmer));
   }
 
-  async findFarmerById(id: string): Promise<User> {
+  async findFarmerById(id: number): Promise<User> {
     const farmer = await this.userRepository.findOne({
       where: { id, role: UserRole.FARMER },
     });
@@ -42,7 +42,7 @@ export class FarmersService {
   }
 
   async updateFarmerStatus(
-    id: string,
+    id: number,
     updateFarmerStatusDto: UpdateFarmerStatusDto,
   ): Promise<SafeUser> {
     const farmer = await this.findFarmerById(id);
@@ -53,7 +53,7 @@ export class FarmersService {
     return this.excludeSensitiveFields(farmer);
   }
 
-  async getFarmerStatus(id: string): Promise<{
+  async getFarmerStatus(id: number): Promise<{
     status: CertificationStatus;
     name: string;
     farmSize: number;
@@ -69,7 +69,7 @@ export class FarmersService {
     };
   }
 
-  async getMyProfile(userId: string): Promise<SafeUser> {
+  async getMyProfile(userId: number): Promise<SafeUser> {
     const user = await this.userRepository.findOne({
       where: { id: userId },
     });
