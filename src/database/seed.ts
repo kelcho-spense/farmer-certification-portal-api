@@ -13,6 +13,7 @@ const AppDataSource = new DataSource({
   database: process.env.DB_NAME || 'farmer_certification',
   entities: [User],
   synchronize: true,
+  ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false,
 });
 
 async function seed() {
